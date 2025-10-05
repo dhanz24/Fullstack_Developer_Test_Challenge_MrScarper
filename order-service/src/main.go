@@ -43,8 +43,6 @@ func main() {
 		ProductServiceURL: os.Getenv("PRODUCT_SERVICE_URL"),
 	}
 	
-	
-
 	handler := &handlers.OrderHandler{Service: service}
 
 	routes.OrderRoutes(app, handler)

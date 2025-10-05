@@ -19,7 +19,7 @@ func (h *OrderHandler) CreateOrder(c *fiber.Ctx) error {
 		return c.Status(400).JSON(fiber.Map{"error": "invalid input"})
 	}
 
-	order, err := h.Service.CreateOrder(req.ProductID, req.Qty)
+	order, err := h.Service.CreateOrder(c.Context(), req.ProductID, req.Qty)
 	if err != nil {
 		return c.Status(400).JSON(fiber.Map{"error": err.Error()})
 	}
@@ -29,7 +29,7 @@ func (h *OrderHandler) CreateOrder(c *fiber.Ctx) error {
 // GET (by ID)
 func (h *OrderHandler) GetOrder(c *fiber.Ctx) error {
 	id := c.Params("id")
-	order, err := h.Service.GetOrderByID(id)
+	order, err := h.Service.GetOrderByID(c.Context(),id)
 	if err != nil {
 		return c.Status(404).JSON(fiber.Map{"error": err.Error()})
 	}
@@ -40,7 +40,7 @@ func (h *OrderHandler) GetOrder(c *fiber.Ctx) error {
 func (h *OrderHandler) GetOrdersByProductID(c *fiber.Ctx) error {
 	productId := c.Params("productId")
 
-	orders, err := h.Service.GetOrdersByProductID(productId)
+	orders, err := h.Service.GetOrdersByProductID(c.Context(), productId)
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": err.Error()})
 	}
@@ -50,7 +50,7 @@ func (h *OrderHandler) GetOrdersByProductID(c *fiber.Ctx) error {
 
 // READ ALL
 func (h *OrderHandler) GetAllOrders(c *fiber.Ctx) error {
-	orders, err := h.Service.GetAllOrders()
+	orders, err := h.Service.GetAllOrders(c.Context())
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": err.Error()})
 	}
@@ -68,7 +68,7 @@ func (h *OrderHandler) UpdateOrder(c *fiber.Ctx) error {
 		return c.Status(400).JSON(fiber.Map{"error": "Invalid input"})
 	}
 
-	order, err := h.Service.UpdateOrder(id, body.Status)
+	order, err := h.Service.UpdateOrder(c.Context(), id, body.Status)
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": err.Error()})
 	}
@@ -79,7 +79,7 @@ func (h *OrderHandler) UpdateOrder(c *fiber.Ctx) error {
 // DELETE
 func (h *OrderHandler) DeleteOrder(c *fiber.Ctx) error {
 	id := c.Params("id")
-	err := h.Service.DeleteOrder(id)
+	err := h.Service.DeleteOrder(c.Context(), id)
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": err.Error()})
 	}
