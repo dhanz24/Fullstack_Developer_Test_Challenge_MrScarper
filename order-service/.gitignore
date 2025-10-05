@@ -1,0 +1,30 @@
+# Binaries for the current project
+*.exe
+*.dll
+*.so
+*.dylib
+*.test
+*.prof
+
+# Go module cache
+# This ignores the module cache within the project directory,
+# which is usually handled by Go itself and shouldn't be committed.
+vendor/
+
+# Go build cache
+# This ignores the build cache created by 'go build'
+# and other Go commands.
+.cache/
+
+# IDE-specific files (e.g., VS Code, GoLand)
+.vscode/
+.idea/
+
+# Operating system specific files
+.DS_Store
+Thumbs.db
+
+# Test coverage output
+*.out
+# env files (can opt-in for committing if needed)
+.env
