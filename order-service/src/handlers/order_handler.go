@@ -26,7 +26,7 @@ func (h *OrderHandler) CreateOrder(c *fiber.Ctx) error {
 	return c.Status(201).JSON(order)
 }
 
-// READ (by ID)
+// GET (by ID)
 func (h *OrderHandler) GetOrder(c *fiber.Ctx) error {
 	id := c.Params("id")
 	order, err := h.Service.GetOrderByID(id)
@@ -34,6 +34,18 @@ func (h *OrderHandler) GetOrder(c *fiber.Ctx) error {
 		return c.Status(404).JSON(fiber.Map{"error": err.Error()})
 	}
 	return c.JSON(order)
+}
+
+// GET ORDERS BY PRODUCT ID
+func (h *OrderHandler) GetOrdersByProductID(c *fiber.Ctx) error {
+	productId := c.Params("productId")
+
+	orders, err := h.Service.GetOrdersByProductID(productId)
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	return c.JSON(orders)
 }
 
 // READ ALL

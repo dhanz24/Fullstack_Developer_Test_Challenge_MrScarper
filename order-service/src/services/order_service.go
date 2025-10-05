@@ -11,7 +11,7 @@ import (
 	"strconv"
 
 	"order-service/src/models"
-	
+
 	amqp "github.com/rabbitmq/amqp091-go"
 	"gorm.io/gorm"
 	"github.com/go-redis/redis/v8"
@@ -72,6 +72,8 @@ func (s *OrderService) CreateOrder(productId string, qty int) (*models.Order, er
 		return nil, err
 	}
 
+	s.Redis.Del(context.Background(), fmt.Sprintf("orders:product:%s", productId))
+
 	// publish event ke rabbitmq
 	bodyData := struct {
 		OrderID   string `json:"orderId"`
@@ -106,31 +108,36 @@ func (s *OrderService) GetOrdersByProductID(productId string) ([]models.Order, e
 	ctx := context.Background()
 	key := fmt.Sprintf("orders:product:%s", productId)
 
-	// cek cache
+	// cek cache di Redis
 	cached, err := s.Redis.LRange(ctx, key, 0, -1).Result()
 	if err == nil && len(cached) > 0 {
-		orders := []models.Order{}
+		orders := make([]models.Order, 0, len(cached))
 		for _, item := range cached {
 			var o models.Order
 			json.Unmarshal([]byte(item), &o)
 			orders = append(orders, o)
 		}
+		fmt.Println("✅ Using cached data from Redis")
 		return orders, nil
 	}
 
 	// ambil dari DB
 	var orders []models.Order
-	if err := s.DB.Where("product_id = ?", productId).Order("created_at desc").Find(&orders).Error; err != nil {
+	if err := s.DB.Where("product_id = ?", productId).
+		Order("created_at desc").
+		Find(&orders).Error; err != nil {
 		return nil, err
 	}
 
 	// update cache
+	s.Redis.Del(ctx, key) // ✅ fix
 	for _, o := range orders {
 		data, _ := json.Marshal(o)
-		s.Redis.LPush(ctx, key, data)
+		s.Redis.RPush(ctx, key, data) // ✅ fix
 	}
 	s.Redis.Expire(ctx, key, 10*time.Minute)
 
+	fmt.Println("💾 Data cached to Redis")
 	return orders, nil
 }
 
