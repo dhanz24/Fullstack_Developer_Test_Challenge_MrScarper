@@ -90,12 +90,14 @@ curl -X POST http://localhost:3000/products \
 }'
 ```
 Response:
+```bash
 {
   "id": "p1",
   "name": "Laptop",
   "price": "1000",
   "qty": 10
 }
+```
 
 ### 2) Fetch Product (with Redis cache)
 ```bash
@@ -109,13 +111,14 @@ First request hits Product Service DB.
 Subsequent requests are served from Redis cache.
 
 Response:
-
+```bash
 {
   "id": "p1",
   "name": "Laptop",
   "price": "1000",
   "qty": 10
 }
+```
 
 ### 3) Create an Order for Existing Product
 ```bash
@@ -127,7 +130,7 @@ curl -X POST http://localhost:4000/orders \
 }'
 ```
 Response:
-
+```bash
 {
   "id": "order-uuid",
   "productId": "p1",
@@ -135,7 +138,7 @@ Response:
   "status": "created",
   "createdAt": "2025-10-05T07:00:00Z"
 }
-
+```
 
 Event-Driven Flow:
 
@@ -154,7 +157,7 @@ First request queries DB.
 Subsequent requests served from Redis cache.
 
 Example response:
-
+```bash
 [
   {
     "id": "order-uuid",
@@ -164,3 +167,30 @@ Example response:
     "createdAt": "2025-10-05T07:00:00Z"
   }
 ]
+```
+
+## 📡 Example with HTTPie (apps like Postman but lighter)
+
+
+### 1) Create a Product
+<img width="1919" height="676" alt="image" src="https://github.com/user-attachments/assets/b07669f2-262a-41d3-a8b8-75d988ed8d59" />
+
+### 2) Fetch Product (with Redis cache)
+<img width="1919" height="690" alt="image" src="https://github.com/user-attachments/assets/68ece090-4dd3-48ab-b0cb-448914eac917" />
+
+### 3) Create an Order for Existing Product
+<img width="1919" height="681" alt="image" src="https://github.com/user-attachments/assets/4c18188b-0fa1-4886-922e-9a34fb2714be" />
+
+### 4) Fetch Orders by Product ID (cached)
+<img width="1919" height="790" alt="image" src="https://github.com/user-attachments/assets/187f28e7-f3c3-4488-be24-35918b9863e5" />
+
+
+## 📡 Test with 1000 request
+<img width="1919" height="1079" alt="Screenshot 2025-10-05 195642" src="https://github.com/user-attachments/assets/6858bb9e-a328-4ae4-b088-872125eeee7c" />
+
+## Unit Test using Jest
+<img width="936" height="752" alt="image" src="https://github.com/user-attachments/assets/4f8ac05d-b2fa-4767-935c-b1982b48ed2d" />
+
+
+
+
